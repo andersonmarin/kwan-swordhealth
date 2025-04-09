@@ -26,8 +26,8 @@ func NewListTask(taskRepository task.Repository, userRepository user.Repository)
 	return &ListTask{taskRepository: taskRepository, userRepository: userRepository}
 }
 
-func (ct *ListTask) Execute(input *ListTaskInput) ([]*ListTaskOutput, error) {
-	u, err := ct.userRepository.FindOneByID(input.UserID)
+func (lt *ListTask) Execute(input *ListTaskInput) ([]*ListTaskOutput, error) {
+	u, err := lt.userRepository.FindOneByID(input.UserID)
 	if err != nil {
 		return nil, err
 	}
@@ -36,14 +36,7 @@ func (ct *ListTask) Execute(input *ListTaskInput) ([]*ListTaskOutput, error) {
 		return nil, ErrUserNotFound
 	}
 
-	var tasks []*task.Task
-	if u.Role == user.RoleManager {
-		tasks, err = ct.taskRepository.FindAll()
-	} else if u.Role == user.RoleTechnician {
-		tasks, err = ct.taskRepository.FindByUserID(u.ID)
-	} else {
-		return nil, ErrUnauthorizedRoleToListTasks
-	}
+	tasks, err := lt.findTasks(u)
 	if err != nil {
 		return nil, err
 	}
@@ -59,4 +52,15 @@ func (ct *ListTask) Execute(input *ListTaskInput) ([]*ListTaskOutput, error) {
 	}
 
 	return output, nil
+}
+
+func (lt *ListTask) findTasks(u *user.User) ([]*task.Task, error) {
+	switch u.Role {
+	case user.RoleManager:
+		return lt.taskRepository.FindAll()
+	case user.RoleTechnician:
+		return lt.taskRepository.FindByUserID(u.ID)
+	default:
+		return nil, ErrUnauthorizedRoleToListTasks
+	}
 }
