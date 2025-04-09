@@ -68,4 +68,43 @@ func TestListTask_Execute(t *testing.T) {
 		taskRepository.AssertExpectations(t)
 		userRepository.AssertExpectations(t)
 	})
+
+	t.Run("should fail if user does not exist", func(t *testing.T) {
+		taskRepository := new(task.RepositoryMock)
+		userRepository := new(user.RepositoryMock)
+
+		userID := uint64(7)
+
+		userRepository.On("FindOneByID", userID).Return((*user.User)(nil), nil)
+
+		output, err := NewListTask(taskRepository, userRepository).Execute(&ListTaskInput{
+			UserID: userID,
+		})
+		require.ErrorIs(t, err, ErrUserNotFound)
+		require.Nil(t, output)
+
+		taskRepository.AssertExpectations(t)
+		userRepository.AssertExpectations(t)
+	})
+
+	t.Run("should fail if role is unauthorized", func(t *testing.T) {
+		taskRepository := new(task.RepositoryMock)
+		userRepository := new(user.RepositoryMock)
+
+		userID := uint64(7)
+
+		userRepository.On("FindOneByID", userID).Return(&user.User{
+			ID:   userID,
+			Role: "trainee",
+		}, nil)
+
+		output, err := NewListTask(taskRepository, userRepository).Execute(&ListTaskInput{
+			UserID: userID,
+		})
+		require.ErrorIs(t, err, ErrUnauthorizedRoleToListTasks)
+		require.Nil(t, output)
+
+		taskRepository.AssertExpectations(t)
+		userRepository.AssertExpectations(t)
+	})
 }
