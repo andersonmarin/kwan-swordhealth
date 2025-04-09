@@ -1,7 +1,6 @@
 package usecase
 
 import (
-	"errors"
 	"github.com/andersonmarin/kwan-swordhealth/pkg/task"
 	"github.com/andersonmarin/kwan-swordhealth/pkg/user"
 	"time"
@@ -33,13 +32,17 @@ func (ct *ListTask) Execute(input *ListTaskInput) ([]*ListTaskOutput, error) {
 		return nil, err
 	}
 
+	if u == nil {
+		return nil, ErrUserNotFound
+	}
+
 	var tasks []*task.Task
 	if u.Role == user.RoleManager {
 		tasks, err = ct.taskRepository.FindAll()
 	} else if u.Role == user.RoleTechnician {
 		tasks, err = ct.taskRepository.FindByUserID(u.ID)
 	} else {
-		return nil, errors.New("unauthorized role to list tasks")
+		return nil, ErrUnauthorizedRoleToListTasks
 	}
 	if err != nil {
 		return nil, err
