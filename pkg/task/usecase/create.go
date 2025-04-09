@@ -1,7 +1,6 @@
 package usecase
 
 import (
-	"errors"
 	"github.com/andersonmarin/kwan-swordhealth/pkg/task"
 	"github.com/andersonmarin/kwan-swordhealth/pkg/user"
 	"time"
@@ -32,12 +31,20 @@ func (ct *CreateTask) Execute(input *CreateTaskInput) (*CreateTaskOutput, error)
 		return nil, err
 	}
 
+	if u == nil {
+		return nil, ErrUserNotFound
+	}
+
 	if u.Role != user.RoleTechnician {
-		return nil, errors.New("only technicians can create tasks")
+		return nil, ErrUserNotAllowedToCreateTask
+	}
+
+	if len(input.Summary) > 2500 {
+		return nil, ErrSummaryTooLong
 	}
 
 	if input.PerformedAt.After(time.Now()) {
-		return nil, errors.New("performedAt cannot be in the future")
+		return nil, ErrPerformedAtInFuture
 	}
 
 	t, err := ct.taskRepository.Create(&task.Task{
