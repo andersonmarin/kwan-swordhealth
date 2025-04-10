@@ -150,7 +150,7 @@ func TestCreateTask_Execute(t *testing.T) {
 
 		var (
 			userID      = uint64(7)
-			summary     = strings.Repeat("A", 2501)
+			summary     = strings.Repeat("A", task.SummaryMaxLength+1)
 			performedAt = time.Date(2025, time.April, 8, 0, 0, 0, 0, time.UTC)
 		)
 

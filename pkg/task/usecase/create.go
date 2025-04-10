@@ -45,7 +45,7 @@ func (ct *CreateTask) Execute(input *CreateTaskInput) (*CreateTaskOutput, error)
 		return nil, ErrSummaryEmpty
 	}
 
-	if len(input.Summary) > 2500 {
+	if len(input.Summary) > task.SummaryMaxLength {
 		return nil, ErrSummaryTooLong
 	}
 
