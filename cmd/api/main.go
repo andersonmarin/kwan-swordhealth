@@ -1,8 +1,8 @@
 package main
 
 import (
+	"github.com/andersonmarin/kwan-swordhealth/internal/broker"
 	"github.com/andersonmarin/kwan-swordhealth/internal/mysql"
-	"github.com/andersonmarin/kwan-swordhealth/internal/nats"
 	"github.com/andersonmarin/kwan-swordhealth/pkg/task/usecase"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -17,7 +17,7 @@ func main() {
 	}
 	defer db.Close()
 
-	nc, err := nats.OpenNatsConnection()
+	nc, err := broker.OpenNatsConnection()
 	if err != nil {
 		log.Fatalln("Nats connection error:", err)
 	}
@@ -25,7 +25,7 @@ func main() {
 
 	taskRepository := mysql.NewTaskRepository(db)
 	userRepository := mysql.NewUserRepository(db)
-	notificationService := nats.NewNotificationService(nc)
+	notificationService := broker.NewNotificationService(nc)
 
 	createTask := usecase.NewCreateTask(taskRepository, userRepository, notificationService)
 	listTask := usecase.NewListTask(taskRepository, userRepository)
