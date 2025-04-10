@@ -49,6 +49,10 @@ func (ct *CreateTask) Execute(input *CreateTaskInput) (*CreateTaskOutput, error)
 		return nil, ErrSummaryTooLong
 	}
 
+	if input.PerformedAt.IsZero() {
+		return nil, ErrPerformedAtEmpty
+	}
+
 	if input.PerformedAt.After(time.Now()) {
 		return nil, ErrPerformedAtInFuture
 	}
