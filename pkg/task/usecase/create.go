@@ -41,6 +41,10 @@ func (ct *CreateTask) Execute(input *CreateTaskInput) (*CreateTaskOutput, error)
 		return nil, ErrUserNotAllowedToCreateTask
 	}
 
+	if len(input.Summary) == 0 {
+		return nil, ErrSummaryEmpty
+	}
+
 	if len(input.Summary) > 2500 {
 		return nil, ErrSummaryTooLong
 	}
