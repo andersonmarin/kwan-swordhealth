@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"github.com/andersonmarin/kwan-swordhealth/pkg/notification"
 	"github.com/andersonmarin/kwan-swordhealth/pkg/task"
 	"github.com/andersonmarin/kwan-swordhealth/pkg/user"
 	"time"
@@ -17,12 +18,13 @@ type CreateTaskOutput struct {
 }
 
 type CreateTask struct {
-	taskRepository task.Repository
-	userRepository user.Repository
+	taskRepository      task.Repository
+	userRepository      user.Repository
+	notificationService notification.Service
 }
 
-func NewCreateTask(taskRepository task.Repository, userRepository user.Repository) *CreateTask {
-	return &CreateTask{taskRepository: taskRepository, userRepository: userRepository}
+func NewCreateTask(taskRepository task.Repository, userRepository user.Repository, notificationService notification.Service) *CreateTask {
+	return &CreateTask{taskRepository: taskRepository, userRepository: userRepository, notificationService: notificationService}
 }
 
 func (ct *CreateTask) Execute(input *CreateTaskInput) (*CreateTaskOutput, error) {
@@ -53,6 +55,10 @@ func (ct *CreateTask) Execute(input *CreateTaskInput) (*CreateTaskOutput, error)
 		PerformedAt: input.PerformedAt,
 	})
 	if err != nil {
+		return nil, err
+	}
+
+	if err = ct.notificationService.NotifyTaskPerformed(t); err != nil {
 		return nil, err
 	}
 

@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"github.com/andersonmarin/kwan-swordhealth/pkg/notification"
 	"github.com/andersonmarin/kwan-swordhealth/pkg/task"
 	"github.com/andersonmarin/kwan-swordhealth/pkg/user"
 	"github.com/stretchr/testify/require"
@@ -13,6 +14,7 @@ func TestCreateTask_Execute(t *testing.T) {
 	t.Run("should create a new task", func(t *testing.T) {
 		taskRepository := new(task.RepositoryMock)
 		userRepository := new(user.RepositoryMock)
+		notificationService := new(notification.ServiceMock)
 
 		var (
 			userID      = uint64(7)
@@ -37,7 +39,14 @@ func TestCreateTask_Execute(t *testing.T) {
 			Role: user.RoleTechnician,
 		}, nil)
 
-		output, err := NewCreateTask(taskRepository, userRepository).Execute(&CreateTaskInput{
+		notificationService.On("NotifyTaskPerformed", &task.Task{
+			ID:          taskID,
+			UserID:      userID,
+			Summary:     summary,
+			PerformedAt: performedAt,
+		}).Return(nil)
+
+		output, err := NewCreateTask(taskRepository, userRepository, notificationService).Execute(&CreateTaskInput{
 			UserID:      userID,
 			Summary:     summary,
 			PerformedAt: performedAt,
@@ -53,6 +62,7 @@ func TestCreateTask_Execute(t *testing.T) {
 	t.Run("should fail if user does not exist", func(t *testing.T) {
 		taskRepository := new(task.RepositoryMock)
 		userRepository := new(user.RepositoryMock)
+		notificationService := new(notification.ServiceMock)
 
 		var (
 			userID      = uint64(7)
@@ -62,7 +72,7 @@ func TestCreateTask_Execute(t *testing.T) {
 
 		userRepository.On("FindOneByID", uint64(7)).Return((*user.User)(nil), nil)
 
-		output, err := NewCreateTask(taskRepository, userRepository).Execute(&CreateTaskInput{
+		output, err := NewCreateTask(taskRepository, userRepository, notificationService).Execute(&CreateTaskInput{
 			UserID:      userID,
 			Summary:     summary,
 			PerformedAt: performedAt,
@@ -78,6 +88,7 @@ func TestCreateTask_Execute(t *testing.T) {
 	t.Run("should fail if user role is not allowed", func(t *testing.T) {
 		taskRepository := new(task.RepositoryMock)
 		userRepository := new(user.RepositoryMock)
+		notificationService := new(notification.ServiceMock)
 
 		var (
 			userID      = uint64(7)
@@ -90,7 +101,7 @@ func TestCreateTask_Execute(t *testing.T) {
 			Role: user.RoleManager,
 		}, nil)
 
-		output, err := NewCreateTask(taskRepository, userRepository).Execute(&CreateTaskInput{
+		output, err := NewCreateTask(taskRepository, userRepository, notificationService).Execute(&CreateTaskInput{
 			UserID:      userID,
 			Summary:     summary,
 			PerformedAt: performedAt,
@@ -106,6 +117,7 @@ func TestCreateTask_Execute(t *testing.T) {
 	t.Run("should fail if performedAt is in the future", func(t *testing.T) {
 		taskRepository := new(task.RepositoryMock)
 		userRepository := new(user.RepositoryMock)
+		notificationService := new(notification.ServiceMock)
 
 		var (
 			userID      = uint64(7)
@@ -118,7 +130,7 @@ func TestCreateTask_Execute(t *testing.T) {
 			Role: user.RoleTechnician,
 		}, nil)
 
-		output, err := NewCreateTask(taskRepository, userRepository).Execute(&CreateTaskInput{
+		output, err := NewCreateTask(taskRepository, userRepository, notificationService).Execute(&CreateTaskInput{
 			UserID:      userID,
 			Summary:     summary,
 			PerformedAt: performedAt,
@@ -134,6 +146,7 @@ func TestCreateTask_Execute(t *testing.T) {
 	t.Run("should fail if summary exceeds max length", func(t *testing.T) {
 		taskRepository := new(task.RepositoryMock)
 		userRepository := new(user.RepositoryMock)
+		notificationService := new(notification.ServiceMock)
 
 		var (
 			userID      = uint64(7)
@@ -146,7 +159,7 @@ func TestCreateTask_Execute(t *testing.T) {
 			Role: user.RoleTechnician,
 		}, nil)
 
-		output, err := NewCreateTask(taskRepository, userRepository).Execute(&CreateTaskInput{
+		output, err := NewCreateTask(taskRepository, userRepository, notificationService).Execute(&CreateTaskInput{
 			UserID:      userID,
 			Summary:     summary,
 			PerformedAt: performedAt,
