@@ -1,0 +1,39 @@
+version: "3"
+
+services:
+  api:
+    build:
+      dockerfile: cmd/api/Dockerfile
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: root:secret@tcp(mariadb:3306)/swordhealth?charset=utf8mb4&parseTime=True&loc=Local
+      JWT_KEY: secret
+      NATS_URL: nats://nats:4222
+      ADDRESS: :80
+    depends_on:
+      - mariadb
+      - nats
+      - notifier
+    ports:
+      - "8080:80"
+  notifier:
+    build:
+      dockerfile: cmd/notifier/Dockerfile
+    restart: unless-stopped
+    environment:
+      NATS_URL: nats:4222
+    depends_on:
+      - nats
+  mariadb:
+    image: mariadb:11.1
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: secret
+      MARIADB_DATABASE: swordhealth
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./sql:/docker-entrypoint-initdb.d
+  nats:
+    image: nats:2.11-alpine
+    restart: unless-stopped

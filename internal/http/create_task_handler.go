@@ -22,7 +22,7 @@ func (h *CreateTaskHandler) Handle(c echo.Context) error {
 	}
 
 	var input usecase.CreateTaskInput
-	if err := c.Bind(&input); err != nil {
+	if err = c.Bind(&input); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err)
 	}
 
