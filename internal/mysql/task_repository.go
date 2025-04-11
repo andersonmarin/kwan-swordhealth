@@ -13,23 +13,21 @@ func NewTaskRepository(db *sql.DB) *TaskRepository {
 	return &TaskRepository{db: db}
 }
 
-func (tr *TaskRepository) Create(t *task.Task) (*task.Task, error) {
+func (tr *TaskRepository) Create(t *task.Task) (uint64, error) {
 	result, err := tr.db.Exec(`
 	INSERT INTO tasks(user_id, summary, performed_at) 
 	VALUES (?, ?, ?)
 	`, t.UserID, t.Summary, t.PerformedAt)
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
 
 	id, err := result.LastInsertId()
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
 
-	t.ID = uint64(id)
-
-	return t, nil
+	return uint64(id), nil
 }
 
 func (tr *TaskRepository) FindAll() ([]*task.Task, error) {

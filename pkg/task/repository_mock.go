@@ -6,9 +6,9 @@ type RepositoryMock struct {
 	mock.Mock
 }
 
-func (r *RepositoryMock) Create(task *Task) (*Task, error) {
+func (r *RepositoryMock) Create(task *Task) (uint64, error) {
 	args := r.Called(task)
-	return args.Get(0).(*Task), args.Error(1)
+	return args.Get(0).(uint64), args.Error(1)
 }
 
 func (r *RepositoryMock) FindAll() ([]*Task, error) {

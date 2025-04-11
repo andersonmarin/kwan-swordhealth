@@ -27,12 +27,7 @@ func TestCreateTask_Execute(t *testing.T) {
 			UserID:      userID,
 			Summary:     summary,
 			PerformedAt: performedAt,
-		}).Return(&task.Task{
-			ID:          taskID,
-			UserID:      userID,
-			Summary:     summary,
-			PerformedAt: performedAt,
-		}, nil)
+		}).Return(taskID, nil)
 
 		userRepository.On("FindOneByID", uint64(7)).Return(&user.User{
 			ID:   userID,

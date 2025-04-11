@@ -57,16 +57,19 @@ func (ct *CreateTask) Execute(input *CreateTaskInput) (*CreateTaskOutput, error)
 		return nil, ErrPerformedAtInFuture
 	}
 
-	t, err := ct.taskRepository.Create(&task.Task{
+	t := task.Task{
 		UserID:      input.UserID,
 		Summary:     input.Summary,
 		PerformedAt: input.PerformedAt,
-	})
+	}
+
+	taskID, err := ct.taskRepository.Create(&t)
 	if err != nil {
 		return nil, err
 	}
+	t.ID = taskID
 
-	if err = ct.notificationService.NotifyTaskPerformed(t); err != nil {
+	if err = ct.notificationService.NotifyTaskPerformed(&t); err != nil {
 		return nil, err
 	}
 
