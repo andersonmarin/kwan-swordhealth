@@ -7,6 +7,7 @@ import (
 )
 
 type CreateTaskHandler struct {
+	Handler
 	createTask *usecase.CreateTask
 }
 
@@ -14,15 +15,20 @@ func NewCreateTaskHandler(createTask *usecase.CreateTask) *CreateTaskHandler {
 	return &CreateTaskHandler{createTask: createTask}
 }
 
-func (cth *CreateTaskHandler) Handle(c echo.Context) error {
+func (h *CreateTaskHandler) Handle(c echo.Context) error {
+	userID, err := h.currentUserID(c)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusUnauthorized, err)
+	}
+
 	var input usecase.CreateTaskInput
 	if err := c.Bind(&input); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err)
 	}
 
-	input.UserID = 2
+	input.UserID = userID
 
-	output, err := cth.createTask.Execute(&input)
+	output, err := h.createTask.Execute(&input)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err)
 	}
