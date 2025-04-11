@@ -73,7 +73,7 @@ func TestCreateTask_Execute(t *testing.T) {
 			PerformedAt: performedAt,
 		})
 
-		require.ErrorIs(t, err, task.ErrUserNotFound)
+		require.ErrorIs(t, err, user.ErrUserNotFound)
 		require.Nil(t, output)
 
 		taskRepository.AssertExpectations(t)
@@ -102,7 +102,7 @@ func TestCreateTask_Execute(t *testing.T) {
 			PerformedAt: performedAt,
 		})
 
-		require.ErrorIs(t, err, task.ErrUserNotAllowedToCreateTask)
+		require.ErrorIs(t, err, user.ErrUserNotAllowedToCreateTask)
 		require.Nil(t, output)
 
 		taskRepository.AssertExpectations(t)

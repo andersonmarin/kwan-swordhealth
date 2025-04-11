@@ -13,3 +13,7 @@ type User struct {
 	Password string
 	Role     Role
 }
+
+func (u *User) CanCreateTask() bool {
+	return u.Role == RoleTechnician
+}

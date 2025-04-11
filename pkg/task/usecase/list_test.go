@@ -80,7 +80,7 @@ func TestListTask_Execute(t *testing.T) {
 		output, err := NewListTask(taskRepository, userRepository).Execute(&ListTaskInput{
 			UserID: userID,
 		})
-		require.ErrorIs(t, err, task.ErrUserNotFound)
+		require.ErrorIs(t, err, user.ErrUserNotFound)
 		require.Nil(t, output)
 
 		taskRepository.AssertExpectations(t)

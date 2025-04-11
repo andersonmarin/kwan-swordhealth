@@ -33,7 +33,7 @@ func (lt *ListTask) Execute(input *ListTaskInput) ([]*ListTaskOutput, error) {
 	}
 
 	if u == nil {
-		return nil, task.ErrUserNotFound
+		return nil, user.ErrUserNotFound
 	}
 
 	tasks, err := lt.findTasks(u)

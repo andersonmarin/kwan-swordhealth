@@ -34,11 +34,11 @@ func (ct *CreateTask) Execute(input *CreateTaskInput) (*CreateTaskOutput, error)
 	}
 
 	if u == nil {
-		return nil, task.ErrUserNotFound
+		return nil, user.ErrUserNotFound
 	}
 
-	if u.Role != user.RoleTechnician {
-		return nil, task.ErrUserNotAllowedToCreateTask
+	if !u.CanCreateTask() {
+		return nil, user.ErrUserNotAllowedToCreateTask
 	}
 
 	t := task.Task{
