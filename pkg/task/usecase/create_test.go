@@ -73,7 +73,7 @@ func TestCreateTask_Execute(t *testing.T) {
 			PerformedAt: performedAt,
 		})
 
-		require.ErrorIs(t, err, ErrUserNotFound)
+		require.ErrorIs(t, err, task.ErrUserNotFound)
 		require.Nil(t, output)
 
 		taskRepository.AssertExpectations(t)
@@ -102,7 +102,7 @@ func TestCreateTask_Execute(t *testing.T) {
 			PerformedAt: performedAt,
 		})
 
-		require.ErrorIs(t, err, ErrUserNotAllowedToCreateTask)
+		require.ErrorIs(t, err, task.ErrUserNotAllowedToCreateTask)
 		require.Nil(t, output)
 
 		taskRepository.AssertExpectations(t)
@@ -131,7 +131,7 @@ func TestCreateTask_Execute(t *testing.T) {
 			PerformedAt: performedAt,
 		})
 
-		require.ErrorIs(t, err, ErrSummaryEmpty)
+		require.ErrorIs(t, err, task.ErrSummaryEmpty)
 		require.Nil(t, output)
 
 		taskRepository.AssertExpectations(t)
@@ -160,7 +160,7 @@ func TestCreateTask_Execute(t *testing.T) {
 			PerformedAt: performedAt,
 		})
 
-		require.ErrorIs(t, err, ErrSummaryTooLong)
+		require.ErrorIs(t, err, task.ErrSummaryTooLong)
 		require.Nil(t, output)
 
 		taskRepository.AssertExpectations(t)
@@ -189,7 +189,7 @@ func TestCreateTask_Execute(t *testing.T) {
 			PerformedAt: performedAt,
 		})
 
-		require.ErrorIs(t, err, ErrPerformedAtEmpty)
+		require.ErrorIs(t, err, task.ErrPerformedAtEmpty)
 		require.Nil(t, output)
 
 		taskRepository.AssertExpectations(t)
@@ -218,7 +218,7 @@ func TestCreateTask_Execute(t *testing.T) {
 			PerformedAt: performedAt,
 		})
 
-		require.ErrorIs(t, err, ErrPerformedAtInFuture)
+		require.ErrorIs(t, err, task.ErrPerformedAtInFuture)
 		require.Nil(t, output)
 
 		taskRepository.AssertExpectations(t)

@@ -33,7 +33,7 @@ func (lt *ListTask) Execute(input *ListTaskInput) ([]*ListTaskOutput, error) {
 	}
 
 	if u == nil {
-		return nil, ErrUserNotFound
+		return nil, task.ErrUserNotFound
 	}
 
 	tasks, err := lt.findTasks(u)
@@ -61,6 +61,6 @@ func (lt *ListTask) findTasks(u *user.User) ([]*task.Task, error) {
 	case user.RoleTechnician:
 		return lt.taskRepository.FindByUserID(u.ID)
 	default:
-		return nil, ErrUnauthorizedRoleToListTasks
+		return nil, task.ErrUnauthorizedRoleToListTasks
 	}
 }

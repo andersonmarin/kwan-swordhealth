@@ -34,33 +34,21 @@ func (ct *CreateTask) Execute(input *CreateTaskInput) (*CreateTaskOutput, error)
 	}
 
 	if u == nil {
-		return nil, ErrUserNotFound
+		return nil, task.ErrUserNotFound
 	}
 
 	if u.Role != user.RoleTechnician {
-		return nil, ErrUserNotAllowedToCreateTask
-	}
-
-	if len(input.Summary) == 0 {
-		return nil, ErrSummaryEmpty
-	}
-
-	if len(input.Summary) > task.SummaryMaxLength {
-		return nil, ErrSummaryTooLong
-	}
-
-	if input.PerformedAt.IsZero() {
-		return nil, ErrPerformedAtEmpty
-	}
-
-	if input.PerformedAt.After(time.Now()) {
-		return nil, ErrPerformedAtInFuture
+		return nil, task.ErrUserNotAllowedToCreateTask
 	}
 
 	t := task.Task{
 		UserID:      input.UserID,
 		Summary:     input.Summary,
 		PerformedAt: input.PerformedAt,
+	}
+
+	if err = t.Validate(); err != nil {
+		return nil, err
 	}
 
 	taskID, err := ct.taskRepository.Create(&t)

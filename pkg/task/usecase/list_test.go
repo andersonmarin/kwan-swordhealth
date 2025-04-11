@@ -80,7 +80,7 @@ func TestListTask_Execute(t *testing.T) {
 		output, err := NewListTask(taskRepository, userRepository).Execute(&ListTaskInput{
 			UserID: userID,
 		})
-		require.ErrorIs(t, err, ErrUserNotFound)
+		require.ErrorIs(t, err, task.ErrUserNotFound)
 		require.Nil(t, output)
 
 		taskRepository.AssertExpectations(t)
@@ -101,7 +101,7 @@ func TestListTask_Execute(t *testing.T) {
 		output, err := NewListTask(taskRepository, userRepository).Execute(&ListTaskInput{
 			UserID: userID,
 		})
-		require.ErrorIs(t, err, ErrUnauthorizedRoleToListTasks)
+		require.ErrorIs(t, err, task.ErrUnauthorizedRoleToListTasks)
 		require.Nil(t, output)
 
 		taskRepository.AssertExpectations(t)
