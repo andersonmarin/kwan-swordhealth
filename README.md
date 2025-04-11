@@ -1,6 +1,6 @@
 # Kwan Sword Health Test
 
-This project is composed of two main services—api and notifier—which communicate via messaging (NATS) and persist data
+This project is composed of two main services (api and notifier) which communicate via messaging (NATS) and persist data
 using a MySQL (MariaDB) database. The system primarily focuses on the core functionalities: creating and listing tasks
 performed by technicians.
 
@@ -51,6 +51,16 @@ notifications—currently logging the event details.
 #### Environment Variable
 
 - NATS_URL
+
+## Testing
+
+Unit tests were implemented for the core domain logic located in `pkg/task/usecase`.
+
+To run the tests, execute the following command inside the project root:
+
+```shell
+go test ./...
+```
 
 ## Running Locally with Docker Compose
 
@@ -106,7 +116,7 @@ curl --request GET \
   --header 'Authorization: Bearer {{JWT}}'
 ```
 
-##### Test Users
+#### Test Users
 
 - **tech1**
     - JWT: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MX0.tjVEMiS5O2yNzclwLdaZ-FuzrhyqOT7UwM9Hfc0ZQ8Q`
@@ -120,7 +130,12 @@ curl --request GET \
 
 ## Final Considerations
 
-I chose not to implement additional features related to tasks (such as update and delete), nor the user-related functionalities.
-This decision was made based on the limited time I had available to complete the challenge.
+I chose not to implement additional features related to tasks (such as update and delete), nor the user-related
+functionalities. This decision was made based on the limited time I had available to complete the challenge.
+
+Additionally, some configuration and execution decisions were made to make it easier to evaluate the solution, such as:
+
+- Keeping environment variables defined in the `docker-compose.yml` file.
+- Providing an SQL script with the full database schema and predefined users.
 
 > I'm fully open to feedback regarding the solution and its implementation.
