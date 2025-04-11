@@ -14,7 +14,7 @@ type ListTaskOutput struct {
 	ID          uint64    `json:"id"`
 	UserID      uint64    `json:"userId"`
 	Summary     string    `json:"summary"`
-	PerformedAt time.Time `json:"performed_at"`
+	PerformedAt time.Time `json:"performedAt"`
 }
 
 type ListTask struct {

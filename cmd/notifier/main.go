@@ -28,7 +28,7 @@ func main() {
 		}
 	})
 	if err != nil {
-		panic(err)
+		log.Fatalln("Nats subscription error:", err)
 	}
 
 	select {}
