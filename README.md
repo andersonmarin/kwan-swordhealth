@@ -4,7 +4,7 @@ This project is composed of two main services (api and notifier) which communica
 using a MySQL (MariaDB) database. The system primarily focuses on the core functionalities: creating and listing tasks
 performed by technicians.
 
-## Architecture
+## Structure
 
 ```
 ├── cmd/            # Entry points for the services
@@ -25,7 +25,7 @@ performed by technicians.
 
 ### API
 
-API Service: Receives HTTP requests (secured with JWT via Echo) and publishes events through NATS.
+API Service receives HTTP requests (secured with JWT via Echo) and publishes events through NATS.
 
 #### Key Dependencies
 
@@ -41,8 +41,7 @@ API Service: Receives HTTP requests (secured with JWT via Echo) and publishes ev
 
 ### Notifier
 
-Subscribes to NATS events (specifically, notification.notifyTaskPerformed) and processes
-notifications—currently logging the event details.
+Subscribes to NATS events and processes notifications, currently printing the event details.
 
 #### Key Dependency
 
@@ -71,9 +70,9 @@ go test ./...
 
 ### Instructions
 
-#### 1. Clone the Repository, ensure you have the project source on your local machine.
+#### 1. Clone the Repository.
 
-#### 2. Start the Services, open your terminal and run:
+#### 2. Open your terminal and run:
 
 ```shell
 docker-compose up --build
@@ -138,4 +137,4 @@ Additionally, some configuration and execution decisions were made to make it ea
 - Keeping environment variables defined in the `docker-compose.yml` file.
 - Providing an SQL script with the full database schema and predefined users.
 
-> I'm fully open to feedback regarding the solution and its implementation.
+**I'm fully open to feedback regarding the solution and its implementation.**
